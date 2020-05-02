@@ -1,7 +1,7 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 require("console.table");
-require("dotenv");
+require("dotenv").config();
 
 var productId = [];
 
@@ -9,8 +9,7 @@ var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
     user: "root",
-    password: "arr3steDdev!",
-    // password: process.env.MYSQLPASS,
+    password: process.env.MYSQLPASS,
     database: "bamazon"
 });
 
@@ -65,8 +64,29 @@ function displayProducts() {
     })
 };
 
+function productIds(){
+    connection.query("SELECT * FROM products", function (error, result) {
+        if (error) {
+            throw error;
+        };
+
+        for (let i = 0; i < result.length; i++) {
+            productId.push(result[i].item_id);
+        }
+        getUpdateData()
+    })
+}
 
 function orderItems() {
+    if (productId.length === 0){
+        productIds();
+    }
+    else{
+        getUpdateData()
+    }
+
+}
+  function getUpdateData(){
     inquirer.prompt([
         {
             type: "list",
@@ -92,15 +112,14 @@ function orderItems() {
                         if (error) {
                             throw error;
                         };
-
-                        console.log("Order has been placed - you will receive your order in 5-10 eons!");
+                        console.log("Item is in stock! Order has been placed - you will receive your order in 5-10 eons!");
+                        displayMenuChoices();
                     })
             } else {
                 console.log("Out of stock!");
+                displayMenuChoices();
             }
-            displayMenuChoices();
         })
-
     })
 };
 
