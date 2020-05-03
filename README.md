@@ -32,4 +32,10 @@ Examples: in bash/terminal, run the following
 $ node bamazonCustomer.js
 ```
 
+### Populate SQL Database
+
+Use amaz-schema.sql file to create database and populate database.
+
+
+
 
